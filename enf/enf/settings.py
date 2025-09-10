@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
-from django.conf.global_settings import MEDIA_URL
+from django.conf.global_settings import MEDIA_URL, SESSION_COOKIE_AGE, SESSION_SAVE_EVERY_REQUEST
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -137,3 +137,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SESSION_COOKIE_AGE = 86400 # 30 days
+SESSION_SAVE_EVERY_REQUEST = True
