@@ -79,7 +79,7 @@ def edit_account_details(request):
     })
 
 @login_required(login_url='/users/login')
-def update_account_detail(request):
+def update_account_details(request):
     if request.method == 'POST':
         form = CustomUserUpdateForm(request.POST, instance=request.user)
 
