@@ -19,10 +19,10 @@ def register(request):
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
             return redirect('main:index')
-        else:
-            form = CustomUserCreationForm()
+    else:
+        form = CustomUserCreationForm()
 
-        return render(request, 'user/register.html', {'form': form})
+    return render(request, 'users/register.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -33,10 +33,10 @@ def login_view(request):
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
             return redirect('main:index')
-        else:
-            form = CustomUserLoginForm()
+    else:
+        form = CustomUserLoginForm()
 
-        return render(request, 'users/login.html', {'form': form})
+    return render(request, 'users/login.html', {'form': form})
 
 # если пользователь не авторизован, перенаправит на вход
 @login_required(login_url='/users/login')
@@ -67,13 +67,13 @@ def profile_view(request):
 def account_details(request):
     user = CustomUser.objects.get(id=request.user.id)
 
-    return TemplateResponse(request, 'users/partials/account_detail.html', {'user': user})
+    return TemplateResponse(request, 'users/partials/account_details.html', {'user': user})
 
 @login_required(login_url='/users/login')
 def edit_account_details(request):
     form = CustomUserUpdateForm(instance=request.user)
 
-    return TemplateResponse(request, 'users/partials/edit_account_detail.html', {
+    return TemplateResponse(request, 'users/partials/edit_profile_detail.html', {
         'user': request.user,
         'form': form
     })
@@ -92,12 +92,12 @@ def update_account_details(request):
             request.user = updated_user
 
             if request.headers.get('HX-Request'):
-                return TemplateResponse(request, 'users/partials/account_detail.html', {'user': updated_user})
+                return TemplateResponse(request, 'users/partials/account_details.html', {'user': updated_user})
 
-            return TemplateResponse(request, 'users/partials/account_detail.html', {'user': updated_user})
+            return TemplateResponse(request, 'users/partials/account_details.html', {'user': updated_user})
 
         else:
-            return TemplateResponse(request, 'users/partials/edit_account_detail.html', {
+            return TemplateResponse(request, 'users/partials/edit_profile_detail.html', {
                 'user': request.user,
                 'form': form
             })
