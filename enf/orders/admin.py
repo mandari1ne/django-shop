@@ -39,7 +39,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ('status', 'first_name', 'last_name')
     search_fields = ('email', 'first_name', 'last_name')
     date_hierarchy = 'created_at'
-    readonly_fields = ('created_at', 'updated_at', 'total_price', 'stripe_payment_intent_id')
+    readonly_fields = ('created_at', 'updated_at', 'total_price', 'stripe_payment_intend_id')
     inlines = [OrderItemInline]
 
     fieldsets = (
