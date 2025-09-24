@@ -1,5 +1,3 @@
-from functools import total_ordering
-
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -14,6 +12,7 @@ from cart.models import Cart
 from main.models import ProductSize
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
+from payment.views import create_stripe_checkout_session
 
 
 # так для классов, декоратор ко всем  (dispatch)
@@ -105,6 +104,46 @@ class CheckoutView(CartMixin, View):
                 )
 
             # создаем платежную систему
-            # try:
-            #     if payment_provider == 'stripe'
-            #         checkout_session =
+            try:
+                if payment_provider == 'stripe':
+                    checkout_session = create_stripe_checkout_session(order, request)
+                    cart.clear()
+
+                    if request.headers.get('HX-Request'):
+                        response = HttpResponse(status=200)
+                        response['HX-Request'] = checkout_session.url
+
+                        return response
+
+                    return redirect(checkout_session.url)
+
+            except Exception as e:
+                order.delete()
+
+                context = {
+                    'form': form,
+                    'cart': cart,
+                    'cart_item': cart.item.select_related('product', 'product_size__size').order_by('-added_at'),
+                    'total_price': total_price,
+                    'error_message': f'Payment processing error: {str(e)}',
+                }
+
+                if request.headers.get('HX-Request'):
+                    return TemplateResponse(request, 'orders/checkout_content.html', context)
+
+                return render(request, 'orders/checkout.html', context)
+
+        else:
+            context = {
+                'form': form,
+                'cart': cart,
+                'cart_item': cart.item.select_related('product', 'product_size__size').order_by('-added_at'),
+                'total_price': total_price,
+                'error_message': f'Please correct the errors in the form',
+            }
+
+            if request.headers.get('HX-Request'):
+                return TemplateResponse(request, 'orders/checkout_content.html', context)
+
+            return render(request, 'orders/checkout.html', context)
+
