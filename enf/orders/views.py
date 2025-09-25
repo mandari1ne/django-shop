@@ -123,7 +123,7 @@ class CheckoutView(CartMixin, View):
                 context = {
                     'form': form,
                     'cart': cart,
-                    'cart_item': cart.item.select_related('product', 'product_size__size').order_by('-added_at'),
+                    'cart_item': cart.items.select_related('product', 'product_size__size').order_by('-added_at'),
                     'total_price': total_price,
                     'error_message': f'Payment processing error: {str(e)}',
                 }
@@ -137,7 +137,7 @@ class CheckoutView(CartMixin, View):
             context = {
                 'form': form,
                 'cart': cart,
-                'cart_item': cart.item.select_related('product', 'product_size__size').order_by('-added_at'),
+                'cart_item': cart.items.select_related('product', 'product_size__size').order_by('-added_at'),
                 'total_price': total_price,
                 'error_message': f'Please correct the errors in the form',
             }
